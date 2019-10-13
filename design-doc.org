@@ -1,0 +1,51 @@
+#+TITLE: Workiom Automation Module Architecture
+#+AUTHOR: Mohammad Matini
+#+EMAIL: mohammad.matini@outlook.com
+#+DATE: [2019-09-25 Wed 19:42]
+
+* Abstract
+  The Workiom automation system will rely on a Wexflow server for workflow
+  execution. The Wexflow server execution will be triggered by AMQP messages
+  received from a RabbitMQ queue. Those messages will be published by the
+  Workiom server on appropriate events, such as record creation, update,
+  etc.
+
+  This document will probably evolve with time.
+
+* Message-Based Trigger System
+** Services
+*** RabbitMQ (Messaging Bus)
+    RabbitMQ will be the queue messaging bus. It will facilitate the
+    communication between Workiom servers and Wexflow servers. It will allow
+    load-balancing workflow execution requests from multiple Workiom
+    instances between multiple wexflow instances.
+
+*** Workiom (Publisher)
+    The Workiom server instances will publish workflow execution requests on
+    the messaging bus. A workflow execution request will contain in its body
+    the following properties:
+    - The workflow ID to execute.
+    - A Workiom record as a payload. It is a JSON of Workiom field IDs and
+      field values.
+
+*** Wexflow (Consumer)
+    The Wexflow server instances will consume workflow execution requests
+    from the messaging bus. Wexflow will execute the workflow specified in
+    the body of the message, using input values from the record payload in
+    the body of the message.
+
+    A Wexflow server should consume one single message at a time, and should
+    not consume another message until it completes executing the current
+    message's workflow request.
+  
+** Illustrative Figure
+
+   Here's a silly image XD
+
+   [[file:workiom-automation.png]]
+
+   sorry, it could be better.
+
+** References
+   Some possibly useful resources:
+   - https://www.rabbitmq.com/tutorials/tutorial-two-dotnet.html
