@@ -1,0 +1,123 @@
+#+TITLE: Workiom Automation Instructions
+#+DATE: [2019-10-13 Sun 20:19]
+#+EMAIL: mohammad.matini@outlook.com
+#+AUTHOR: Mohammad Matini
+
+* Log-in to Wexflow
+  1. go to the URL: http://wexflow.workiom.club:8001/
+  2. enter the credentials
+
+* Create a Wexflow Workflow
+  1. go to the =Designer= tab.
+  2. click the =New workflow= button
+  3. enter any int value into the =Id= field (e.g. 105), a =Name=, and
+     select any =LaunchType=. Don't worry about them, we are going to
+     replace those values in a moment.
+  4. Click =Save= to save the workflow.
+  5. After saving the workflow, choose the workflow from the side panel.
+  6. Click the =Xml= button to show the workflow XML definition.
+  7. Replace the XML with the following definition. Set the values between
+     ={{}}= to appropriate values.
+     #+BEGIN_SRC xml
+       <Workflow id="{{WORKFLOW_ID}}" name="{{WORKFLOW_NAME}}" description="" xmlns="urn:wexflow-schema">
+         <Settings>
+           <Setting name="launchType" value="trigger" />
+           <Setting name="enabled" value="true" />
+           <Setting name="approval" value="false" />
+           <Setting name="hasRestParams" value="false" />
+           <Setting name="workiomAuthUrl" value="{{WORKIOM_API_HOST}}/api/TokenAuth/Authenticate" />
+           <Setting name="workiomTenantName" value="{{WORKIOM_TENANT_NAME}}" />
+           <Setting name="workiomUsername" value="{{WORKIOM_USERNAME}}" />
+           <Setting name="workiomPassword" value="{{WORKIOM_PASSWORD}}" />
+         </Settings>
+         <LocalVariables />
+         <Tasks />
+       </Workflow>
+    #+END_SRC
+     The values to be replaced are:
+     - ={{WORKFLOW_ID}}= :: Unique integer value, ID of the workflow. This
+          will later be used from Workiom's side to identify the Workflow to
+          trigger. (e.g. =341=)
+     - ={{WORKFLOW_NAME}}= :: Name of the workflow. (e.g. =My First Workflow=)
+     - ={{WORKIOM_API_HOST}}= :: The URL of Workiom. This can differ depending
+          on which deployment of Workiom you want to use, development or
+          production or such. (e.g. =http://api.workiom.club:88=)
+     - ={{WORKIOM_TENANT_NAME}}= :: Workiom Tenant / Workspace name to which
+          the workflow applies. (e.g. =demo=)
+     - ={{WORKIOM_USERNAME}}= :: The username of the user which the workflow
+          will authenticate as to run its tasks. (e.g. =admin=)
+     - ={{WORKIOM_PASSWORD}}= :: The password of the aforementioned
+          user.
+  8. Save the workflow again.
+  9. At the bottom of the page, click the =New task= button.
+  10. Set a task ID number. (e.g. 1)
+  11. Choose the task name from the =Name= field. Currently we support the
+      following tasks:
+      - =WorkiomCreateRecord=
+      - =WorkiomUpdateRecord=
+      - =WorkiomNotifyUser=
+  12. After choosing the task type, a few setting fields will appear. The
+      will be different depending on the task type. Fill them with values as
+      follows:
+      - =listId= :: The ID (GUID) of Workiom list to which the task will
+                    apply. (e.g. The list where a record will be created.)
+      - =*Url= :: The API URL which the task will use to
+                 function. (e.g. =createRecordUrl= will have the value of
+                 =http://api.workiom.club:88/api/services/app/Data/Create?listId==)
+      - =mapping= :: An array of field mappings from the source record to
+                     the target record. (e.g. =[{"Field": "61115", "Value":
+                     "61095", "Type": "Field"}]=) See the [[*Record Mapping][Record Mapping]]
+                     section for more details.
+
+* Create a Workiom Workflow
+  1. Go to http://api.workiom.club:88/Ui/Login
+  2. Enter your authentication credentials.
+  3. Go to http://api.workiom.club:88/swagger/index.html
+  4. Under the =Automation= section, expand the
+     =/api/services/app/Automation/Create= sub-section.
+  5. Click the =Try it out= button.
+  6. Change the values in the request body as follows:
+     - =name= :: The name of the workflow. Anything will do.
+     - =externalWorkflowId= :: The Wexflow workflow ID that we set as the
+          value of ={{WORKFLOW_ID}}= in a previous step.
+     - =triggerType= :: Should have the value of =0= if the desired trigger
+                        is =onRecordCreated=, and =1= for a
+                        =onRecordUpdated= trigger.
+     - =listId= :: The list ID of the list that will trigger the workflow.
+     - =fieldId= :: The field ID that will trigger the =onRecordUpdated=
+                    trigger. Doesn't matter if the =triggerType= is =0=.
+   7. Click the =Execute= button.
+
+* Record Mapping
+  Record mappings are an array of objects, each object is a mapping from the
+  source record to the target record. There are two types of record
+  mappings, =Static= and =Field=. For example:
+  #+BEGIN_SRC json
+    {
+        "Field": "61121",           // <--- target field
+        "Value": "Hello World",     // <--- static value
+        "Type": "Static"
+    }
+  #+END_SRC
+  #+BEGIN_SRC json
+    {
+        "Field": "61122",           // <--- target field
+        "Value": "61104",           // <--- source field
+        "Type": "Field"
+    }
+  #+END_SRC
+  =Static=-type mappings use static values to create/update the target
+  record.They put the static value defined in the =Value= field into the
+  target record field defined in the =Field= field.
+
+  =Field=-type mappings use dynamic values from the source created/updated
+  record to fill the values for the target created/updated record. They get
+  the value from the source record field with the ID defined in =Value= and
+  put it in the target record field defined in the =Field= field.
+
+* Celebrate
+  Hopefully this worked out for you, and now you have a beautiful
+  workflow :D 
+
+  If you have questions, please ask on our =workiom-automation= Slack
+  workspace.
