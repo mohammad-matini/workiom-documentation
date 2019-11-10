@@ -52,7 +52,7 @@ and any number of Action (Task) cards.
   current list into the expression. Workiom already has a basic expression
   editor popup that is used in computed fields.
 
-  [[https://workiom.com/wp-content/uploads/2019/09/7-768x370.png][Workiom Formula Expression Editor]]
+  [[https://workiom.com/wp-content/uploads/2019/09/7-768x370.png]]
 
 * Action Cards
   Action cards are the actual tasks the automation system will execute when
