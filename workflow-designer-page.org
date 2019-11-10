@@ -1,3 +1,9 @@
+#+TITLE: Workiom Workflow Designer Page Design Document
+#+TAGS: :design-document:ui-ux:
+#+AUTHOR: Mohammad Matini
+#+EMAIL: mohammad.matini@outlook.com
+#+DATE: [2019-11-10 Sun 22:24]
+
 The Workflow design page allows a user to easily create workflows to help
 them with the automation of various tasks in their Workiom apps. The page
 presents a flow-chart that contains a number of sequential cards. The cards
