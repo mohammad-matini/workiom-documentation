@@ -1,0 +1,119 @@
+The Workflow design page allows a user to easily create workflows to help
+them with the automation of various tasks in their Workiom apps. The page
+presents a flow-chart that contains a number of sequential cards. The cards
+can possibly expand or show a popup to present additional information and
+configuration options to the user.
+
+[[file:./img/workiom-workflow-design-page-mockup.png][Workflow Design Page Mockup]]
+
+There are currently three types of cards; A Trigger card, a Condition card,
+and any number of Action (Task) cards.
+
+* Trigger Card
+  A trigger card is the rule that causes the workflow process to
+  start. There are multiple types of triggers that the user can choose from,
+  some with their own specific configurations. The types are:
+
+** Create Record Trigger
+   This trigger launches the workflow process when a record is created in
+   the current list. This trigger type does not require any special
+   configurations.
+
+** Update Record Trigger
+   This trigger launches the workflow process when a specific field in a
+   record is updated in the current list. This trigger type requires the
+   selection of the field which update will trigger the workflow. A list of
+   the current list's fields should be presented for the user to select the
+   desired field.
+
+** Date-based Trigger
+   This trigger launches the workflow process when a record's date value is
+   reached (e.g. notify a user when a record's `Due Date` arrives). This
+   trigger type requires the selection of the date field which should be
+   watched. A list of the current list's date and date-time fields should be
+   presented for the user to select the desired field.
+
+* Condition Card
+  A condition card allows the user to specify an additional condition to
+  trigger the workflow. This card is optional, and allows the user to
+  specify any formula expression using Workiom's [[https://workiom.com/knowledge-base/computed-field][formula language]]. The
+  result of the formula expression should be a True or False
+  value. Basically, if the condition passes, the workflow is triggered, but
+  if the condition fails, then the workflow is not triggered.
+
+  The conditional expression should be edited using a text area field. And
+  the UI should allow the user to easily insert specific fields from the
+  current list into the expression. Workiom already has a basic expression
+  editor popup that is used in computed fields.
+
+  [[https://workiom.com/wp-content/uploads/2019/09/7-768x370.png][Workiom Formula Expression Editor]]
+
+* Action Cards
+  Action cards are the actual tasks the automation system will execute when
+  the workflow is triggered. There are currently three types of possible
+  actions, each with its own set of configurations.
+
+** Create Record Task
+   This task will create a new record in some list. It requires specifying
+   the list we want to create the record in (which can be in another app,
+   which means the user should optionally be able to select the app
+   too). After selecting the list, the user should be presented with the
+   list's field mappings, where they set the static values or dynamic source
+   of values for each field that will be in the newly created record. See
+   the [[Mappings]] section for more details.
+
+** Update Record Task
+   This task will update an existing record in some list. It requires
+   specifying the list we want to create the record in (which can be in
+   another app, which means the user should optionally be able to select the
+   app too). After selecting the list, the user should specify what record
+   to update, this can be in one of two ways:
+
+   - Update a specific record in the target list, by selecting it from a
+     auto-complete drop-box that helps them choose the record.
+
+   - Update the first linked record in a linked field in the current
+     list. Here, the user should be able to choose the linked field from
+     which the update target record will be retrieved.
+
+   After specifying the record that will be updated, the user should be
+   presented with the list's field mappings, similar to the one in the
+   Create Record Task, where they set the static values or dynamic source of
+   values for each field that will be in the newly created record. See the
+   [[Mappings]] section for more details.
+
+** Notify User Task
+   This task will send a notification message to a specific user in the
+   current Workiom workspace. The user must specify the user to which the
+   notification will be sent by either:
+
+   - Selecting a static user to which the notification will always be
+     sent. (e.g. send notifications to the admin when a project is
+     finished).
+
+   - Selecting a User field from the current list. The message will be sent
+     to the user specified in the value of that field for the record that
+     triggered the workflow. (e.g. send notification to a user when they are
+     assigned to a task in the tasks list).
+
+   In addition to selecting the target user, the user designing the workflow
+   should set the text of the notification message using a text area.
+
+* Mappings
+  Field mappings are used to provide new values for each field in the
+  created or updated records when using a Create Record or Update Record
+  tasks. There two ways to obtain the value for a field:
+
+  - Static values :: Static values are the simpler option where a user just
+                     sets a specific value that all created or updated
+                     records will use every time the workflow is triggered.
+
+  - Dynamic values :: Dynamic values are obtained from fields in the current
+                      list's record that triggered the workflow. The user
+                      should be able to select the field that will provide
+                      this value.
+
+  The design of the mapping UI should be as close as possible to the current
+  list filters UI, as users potentially will already be familiar with it.
+
+  [[file:./img/workiom-list-filters.png][Workiom List Filters]]
