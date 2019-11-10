@@ -10,7 +10,7 @@ presents a flow-chart that contains a number of sequential cards. The cards
 can possibly expand or show a popup to present additional information and
 configuration options to the user.
 
-[[file:./img/workiom-workflow-design-page-mockup.png][Workflow Design Page Mockup]]
+[[file:./img/workiom-workflow-design-page-mockup.png]]
 
 There are currently three types of cards; A Trigger card, a Condition card,
 and any number of Action (Task) cards.
@@ -122,4 +122,4 @@ and any number of Action (Task) cards.
   The design of the mapping UI should be as close as possible to the current
   list filters UI, as users potentially will already be familiar with it.
 
-  [[file:./img/workiom-list-filters.png][Workiom List Filters]]
+  [[file:./img/workiom-list-filters.png]]
