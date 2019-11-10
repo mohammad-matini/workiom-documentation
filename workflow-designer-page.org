@@ -1,4 +1,4 @@
-#+TITLE: Workiom Workflow Designer Page Design Document
+#+TITLE: Design Document -- Workiom Workflow Designer Page
 #+TAGS: :design-document:ui-ux:
 #+AUTHOR: Mohammad Matini
 #+EMAIL: mohammad.matini@outlook.com
