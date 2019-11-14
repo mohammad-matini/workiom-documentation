@@ -66,7 +66,7 @@ and any number of Action (Task) cards.
    too). After selecting the list, the user should be presented with the
    list's field mappings, where they set the static values or dynamic source
    of values for each field that will be in the newly created record. See
-   the [[Mappings]] section for more details.
+   the [[https://github.com/workiom/documentation/blob/master/workflow-designer-page.org#mappings][Mappings]] section for more details.
 
 ** Update Record Task
    This task will update an existing record in some list. It requires
