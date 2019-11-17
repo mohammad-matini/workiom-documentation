@@ -1,0 +1,196 @@
+#+TITLE: Development Guide -- Workiom Automation
+#+DATE: [2019-11-17 Sun 15:39]
+#+EMAIL: mohammad.matini@outlook.com
+#+AUTHOR: Mohammad Matini
+
+* Abstract
+
+  Workiom automation allows users to list, create, update, and delete
+  workflows by calling the appropriate APIs on Workiom's backend
+  server. Auto-generated TypeScript wrappers for the API are provided to
+  ease frontend development. You can find them in the frontend source code
+  repo under the path
+  `angular/src/shared/service-proxies/service-proxies.ts`
+
+[[https://api.workiom.com/swagger/index.html][Swagger documentation]] are also provided for additional reference.
+
+* Workflow Definitions
+
+  Workiom uses an automation engine called [[https://github.com/workiom/wexflow][Wexflow]] internally for workflow
+  execution. Workflow definitions consist of two parts, one for Workiom, and
+  one for Wexflow. In Workiom we define triggers and conditions, and in
+  Wexflow we define actions.
+
+* Workiom Workflow Definition
+
+  The definition of the Workflow from Workiom's side, for now, looks like
+  this:
+
+  #+BEGIN_SRC json
+    {
+        "name": "string",           // name of the workflow
+        "description": "string",    // workflow description
+        "externalWorkflowId": 0,    // IGNORE, WILL BE REMOVED
+        "triggerType": 0,           // the trigger type
+        "listId": "string",         // the trigger list UUID
+        "fieldId": 0,               // the trigger list field ID
+        "condition": "string",      // conditional expression
+        "definition": "string",     // Wexflow JSON workflow definition
+        "isActive": true            // enable / disable the workflow
+    }
+  #+END_SRC
+
+  - name :: The workflow name. A simple string.
+  - description :: The workflow description. A simple string.
+  - externalWorkflowId :: This property is deprecated. It will be removed
+       soon. Do not use it.
+  - triggerType :: Should have the value of =0= if the desired trigger is
+                   =onRecordCreated=, =1= for =onRecordUpdated=, and =2= for
+                   a =onDate= trigger.
+  - fieldId :: The field ID that will trigger the =onRecordUpdated= or
+               =onDate= triggers. If the =triggerType= is =0= then this
+               field is not used.
+  - listId :: The list UUID of the list that will trigger the workflow.
+  - condition :: A conditional expression that uses the Workiom formula
+                 syntax. Must return `true` or `false`. It is evaluated by
+                 the backend server when a trigger event happens. If it
+                 returns `true` then the workflow runs normally, but if it
+                 returns `false` then the workflow trigger will be ignored.
+  - definition :: Wexflow definition, encoded as a JSON string. More details
+                  about Wexflow definitions are provided bellow.
+  - isActive :: Whether the Workflow is enabled or disabled.
+
+* Wexflow Definitions
+
+  Wexflow definition specifies the actions that the workflow engine will
+  execute when a trigger is run. The definition contains a lot of properties
+  that are not important for our purposes right now. Those properties should
+  always contain the same constant values. They are marked by the comment
+  `//constant value`.
+
+  This is an example of a Wexflow definition:
+
+  #+BEGIN_SRC json
+    {
+        "WorkflowInfo":{
+            "Name":"Update Workflow", // Workflow Name
+            "LaunchType":1,           // constant value
+            "Period":"00.00:00:00",   // constant value
+            "CronExpression":null,    // constant value
+            "IsEnabled":true,         // constant value
+            "IsApproval":false,       // constant value
+            "HasRestParams":true,     // constant value
+            "Description":"",         // constant value
+            "IsNew":false,            // constant value
+            "WorkiomUsername":"admin", // constant value
+            "WorkiomPassword": "alarm1", // constant value
+            "WorkiomTenantName": "demo", // constant value
+            "LocalVariables":[]          // constant value
+        },
+        "Tasks":[ // List of tasks (actions) to execute. More examples below.
+            {
+                "Id":0,
+                "Name":"WorkiomUpdateRecord",
+                "Description":"",
+                "IsEnabled":true,
+                "Settings":[
+                    {
+                        "Name":"listId",
+                        "Value":"a701b51f-d991-4d9d-1174-08d74c4dffcc",
+                        "Attributes":[]
+                    },
+                    {
+                        "Name":"mapping",
+                        "Value":"[{\"Field\":\"59936\",\"Value\":\"59930\",\"Type\":\"Field\"}]",
+                        "Attributes":[]
+                    },
+                    {
+                        "Name":"recordIdSource",
+                        "Value":"{\"linkedFieldId\": \"59937\", \"type\": \"dynamic\"}",
+                        "Attributes":[]
+                    }
+                ]
+            }
+        ]
+    }
+  #+END_SRC
+
+  The `Tasks` property contains an array of actions that will be executed
+  when the workflow is triggered. For now, we will have only one task
+  per-workflow.
+
+* Task Definitions
+
+  /To Be Done Later/
+
+  #+BEGIN_SRC json
+    {
+        "Id":0,                     // constant value
+        "Name":"WorkiomUpdateRecord", // type of action
+        "Description":"",             // constant value
+        "IsEnabled":true,             // constant value
+        "Settings":[
+            {
+                "Name":"listId",    // list that contains the record to update
+                "Value":"a701b51f-d991-4d9d-1174-08d74c4dffcc",
+                "Attributes":[]
+            },
+            {
+                "Name":"mapping",   // mappings of update values
+                "Value":"[{\"Field\":\"59936\",\"Value\":\"59930\",\"Type\":\"Field\"}]",
+                "Attributes":[]
+            },
+            {
+                "Name":"recordIdSource", // source of the record to update
+                "Value":"{\"linkedFieldId\": \"59937\", \"type\": \"dynamic\"}", // 
+                "Attributes":[]
+            }
+        ]
+    }
+  #+END_SRC
+
+  #+BEGIN_SRC json
+    {
+        "Id":0,                     // constant value
+        "Name":"WorkiomNotifyUser", // type of action
+        "Description":"",             // constant value
+        "IsEnabled":true,             // constant value
+        "Settings":[
+            {
+                "Name":"mapping",   // mapping of a User Field to extract the
+                                    // user ID that we'll notify. Only the
+                                    // `Value` property is used. The value in
+                                    // the `Field` property is not used. Just
+                                    // Set it to `0`.
+                "Value":"[{\"Field\": \"0\", \"Value\": \"61068\", \"Type\": \"Field\"}]",
+                "Attributes":[]
+            },
+            {
+                "Name":"message",   // Text body of the notification.
+                "Value":"Notification Body: Hello World! XD",
+                "Attributes":[]
+            }
+        ]
+    }
+  #+END_SRC
+
+  #+BEGIN_SRC json
+    {
+        "Id":0,                     // constant value
+        "Name":"WorkiomCreateUser", // type of action
+        "Description":"",             // constant value
+        "IsEnabled":true,             // constant value
+        "Settings":[
+            {
+                "Name":"listId",    // list in which to create the new record
+                "Value":"a701b51f-d991-4d9d-1174-08d74c4dffcc",
+                "Attributes":[]
+            },
+            {
+                "Name":"mapping",   // mapping of values in the newly created record.
+                "Value":"[{\"Field\":\"59936\",\"Value\":\"59930\",\"Type\":\"Field\"},{\"Field\":\"59937\",\"Value\":\"Hello World\",\"Type\":\"Static\"}]",
+                "Attributes":[]
+            }
+        ]
+    }
+  #+END_SRC
