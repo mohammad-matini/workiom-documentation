@@ -177,7 +177,7 @@
   #+BEGIN_SRC json
     {
         "Id":0,                     // constant value
-        "Name":"WorkiomCreateUser", // type of action
+        "Name":"WorkiomCreateRecord", // type of action
         "Description":"",             // constant value
         "IsEnabled":true,             // constant value
         "Settings":[
