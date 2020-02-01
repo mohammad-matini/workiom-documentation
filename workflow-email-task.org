@@ -1,0 +1,138 @@
+#+TITLE: Development Guide -- Workiom Workflow Email Task
+#+AUTHOR: Mohammad Matini
+#+EMAIL: mohammad.matini@outlook.com
+#+DATE: [2020-02-01 Sat 13:02]
+
+* UI Specification
+** Your Email Provider:
+   - description: Select the email provider. This will cause default values
+     to be set for the `host`, `port`, and `enableSsl`. If the user selects
+     `Other (Advanced)`, then we show the fields marked `(Advanced)` for the
+     user to set them manually.
+   - type: N/A
+   - UI component: One drop-down field
+   - example: N/A
+   - properties: N/A
+   - pre-set values:
+     - Gmail
+       - host: smtp.gmail.com
+       - port: 587
+       - enableSsl: True
+     - Outlook
+       - host: smtp.outlook.com
+       - port: 587
+       - enableSsl: True
+     - Other (Advanced)
+       Show advanced fields.
+
+** (Advanced) SMTP Server Host
+   - description: Custom SMTP server hostname. This is an advanced field only
+     shown if the user chose `Other (Advanced)` as their Email Provider.
+   - type: String
+   - UI component: One text input field
+   - example: `smtp.my-cool-custom-site.com`
+   - properties:
+     - host: the provided SMTP server hostname
+
+** (Advanced) SMTP Server Port
+   - description: Custom SMTP server port. This is an advanced field only
+     shown if the user chose `Other (Advanced)` as their Email Provider.
+   - type: Number
+   - example: `587`
+   - UI component: One number input field
+   - properties:
+     - port: the provided SMTP server port
+
+** (Advanced) Enable SSL Encryption
+   - description: Enable SSL for custom SMTP Server. This is an advanced field only
+     shown if the user chose `Other (Advanced)` as their Email Provider.
+   - type: Boolean
+   - UI component: One checkbox
+   - example: true
+   - properties:
+     - enableSsl: Whether or not to enable SSL for SMTP server.
+
+** Email Account to Send From:
+   - description: The email account address.
+   - type: String::email
+   - example: `my.nice.email@gmail.com`
+   - UI component: One text field, email
+   - properties:
+     - user: the provided email
+     - from: the provided email
+
+** Email Account's Password:
+   - description: The email account's password.
+   - type: String::password
+   - example: `0h~S0mE_5ecret+P455` or more realistically `1234`
+   - UI component: One text field, password
+   - properties:
+     - password: the provided password
+
+** Send to
+   - description: list of email addresses to send the email to.
+   - type: Array of String::email
+   - UI component: Multiple Text fields, similar to how the Static List items
+     are defined in Workiom's List editor.
+   - example: an Array of Strings `['test@gmail.com', 'test2@gmail.com', 'test3@gmail.com']`
+   - properties:
+     - bccMapping: email addresses to send the message to. The mapping for
+       this field in the automation should look like this: `[{"Field":
+       0,"Value": "test@gmail.com, test2@gmail.com,
+       test3@gmail.com","Type":"Static"}]` (Note: `Field` is not used for
+       now. Just set it to `0`).
+
+** Subject
+   - description: Message subject.
+   - type: String
+   - UI component: One text field.
+   - example: `Message Subject Text`
+   - properties:
+     - subjectMapping: Message subject. The mapping for this field in the
+       automation should look like this: `[{"Field": 0,"Value": "Message
+       Subject Text","Type":"Static"}]` (Note: `Field` is not used for
+       now. Just set it to `0`).
+** Body
+   - description: Message body
+   - type: String
+   - UI component: One multi-line text field.
+   - example: `Message Body Text`
+   - properties:
+     - bodyMapping: Message body. The mapping for this field in the
+       automation should look like this: `[{"Field": 0,"Value": "Message
+       Body Text\n Hello World.","Type":"Static"}]` (Note: `Field` is not
+       used for now. Just set it to `0`).
+
+
+* Task Object Schema
+  The task object sent in the automation should look like the object in the
+  following example code block. Please, also, consider the following
+  additional notes:
+
+  - The `port` and `enableSsl` must be a string and not a number or a Boolean. 
+  - The email addresses must be syntactically valid. 
+  - `Field` in the mappings should always be `0`.
+  - `Type` should always be `Static`
+  - `host` should not have a protocol identifier (i.e. `http(s)://`) at its
+    beginning. They should be automatically stripped if the user entered
+    them.
+  - Yes, it is correct that the `Value` field in `bccMapping` contains a
+    single string that contains Emails separated by a comma `,`.
+
+  example:
+  
+  #+BEGIN_SRC json
+    {
+        host: "smtp.gmail.com",
+        user: "my.nice.email@gmail.com",
+        enableSsl: "True",
+        password: "1234",
+        port: "587",
+        from: "my.nice.email@gmail.com",
+        toMapping: [],
+        bccMapping: [{"Field": 0,"Value": "test@gmail.com, test2@gmail.com, test3@gmail.com","Type":"Static"}],
+        ccMapping: [],
+        subjectMapping: [{"Field": 0,"Value": "Message Subject Text","Type":"Static"}],
+        bodyMapping: [{"Field": 0,"Value": "Message Body Text\n Hello World.","Type":"Static"}]
+    }
+  #+END_SRC
