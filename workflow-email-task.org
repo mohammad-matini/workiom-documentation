@@ -123,16 +123,16 @@
   
   #+BEGIN_SRC json
     {
-        host: "smtp.gmail.com",
-        user: "my.nice.email@gmail.com",
-        enableSsl: "True",
-        password: "1234",
-        port: "587",
-        from: "my.nice.email@gmail.com",
-        toMapping: [],
-        bccMapping: [{"Field": 0,"Value": "test@gmail.com, test2@gmail.com, test3@gmail.com","Type":"Static"}],
-        ccMapping: [],
-        subjectMapping: [{"Field": 0,"Value": "Message Subject Text","Type":"Static"}],
-        bodyMapping: [{"Field": 0,"Value": "Message Body Text\n Hello World.","Type":"Static"}]
+        "host": "smtp.gmail.com",
+        "user": "my.nice.email@gmail.com",
+        "enableSsl": "True",
+        "password": "1234",
+        "port": "587",
+        "from": "my.nice.email@gmail.com",
+        "toMapping": [],
+        "bccMapping": [{"Field": 0,"Value": "test@gmail.com, test2@gmail.com, test3@gmail.com","Type":"Static"}],
+        "ccMapping": [],
+        "subjectMapping": [{"Field": 0,"Value": "Message Subject Text","Type":"Static"}],
+        "bodyMapping": [{"Field": 0,"Value": "Message Body Text\n Hello World.","Type":"Static"}]
     }
   #+END_SRC
