@@ -92,6 +92,7 @@
        automation should look like this: `[{"Field": 0,"Value": "Message
        Subject Text","Type":"Static"}]` (Note: `Field` is not used for
        now. Just set it to `0`).
+
 ** Body
    - description: Message body
    - type: String
@@ -102,7 +103,6 @@
        automation should look like this: `[{"Field": 0,"Value": "Message
        Body Text\n Hello World.","Type":"Static"}]` (Note: `Field` is not
        used for now. Just set it to `0`).
-
 
 * Task Object Schema
   The task object sent in the automation should look like the object in the
@@ -136,3 +136,19 @@
         "bodyMapping": [{"Field": 0,"Value": "Message Body Text\n Hello World.","Type":"Static"}]
     }
   #+END_SRC
+
+* Backend Email Templates
+  We need to implement new CRUD API endpoints for user-defined Email
+  templates. The user should be able to Create, Get, Update, and Delete
+  Email templates. Email templates are List-specific. Each Workiom List can
+  have any number of templates. (Note, prefer to store template in the SQL
+  database, and not in the Mongo database).
+
+  Templates have names, and bodies. A template body is a text that possibly
+  contains field placeholders (e.g. {{_F_4215}} ). The field number should
+  be present in the List for which the template is created.
+
+  We should implement a simple "Fill Template" API that gets called with a
+  data record from the List, and a template ID. The API should replace the
+  field placeholders (e.g. {{_F_4215}} ) in the template with data from the
+  record given to it.
